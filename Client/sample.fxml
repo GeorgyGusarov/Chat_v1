@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?scenebuilder-stylesheet /css/Styles.css?>
+<?import java.net.URL?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Client.Controller"
+      prefHeight="400.0" prefWidth="600.0">
+
+    <stylesheets>
+        <URL value="@/Client/css/Styles.css"/>
+    </stylesheets>
+
+    <TextArea
+            fx:id="textArea"
+            editable="false"
+            VBox.vgrow="ALWAYS"
+    />
+
+    <HBox>
+        <TextField
+                fx:id="textField"
+                HBox.hgrow="ALWAYS"
+                promptText="Введите сообщение..."
+                onAction="#sendMessage"
+        />
+        <Button
+                fx:id="button"
+                text="Sent"
+                onAction="#sendMessage"
+        />
+    </HBox>
+</VBox>
