@@ -25,7 +25,6 @@ public class ServerMain {
 
             /*Scanner scanner = new Scanner(socket.getInputStream()); // с помощью сканера читаем данные из сети
 
-
              // Realization of echo server
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);*/
@@ -35,11 +34,13 @@ public class ServerMain {
                 System.out.println("Client: " + str);
 
                 if (str.equals("/end")) {
+                    out.writeUTF("/server is closed");
                     break;
                 }
 
                 out.writeUTF(str);
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
