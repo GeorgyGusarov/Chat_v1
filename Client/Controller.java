@@ -26,21 +26,43 @@ public class Controller implements Initializable {
             socket = new Socket(IP_ADDRESS, PORT);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        while (true) {
+                            String str = in.readUTF(); // сюда приходит сообщение от сервера
+                            if (str.equals("/server is closed")) {
+                                textArea.appendText("Alert: you have been disconnected from the server");
+                                break;
+                            }
+                            textArea.appendText(str + "\n");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            socket.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }).start();
+
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     public void sendMessage() {
-        textArea.appendText(textField.getText() + "\n");
-        textField.clear();
-        textField.requestFocus();
+        try {
+            out.writeUTF(textField.getText());
+            textField.clear();
+            textField.requestFocus();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
 }
