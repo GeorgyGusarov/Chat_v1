@@ -24,7 +24,7 @@
         <TextField
                 fx:id="textField"
                 HBox.hgrow="ALWAYS"
-                promptText="Введите сообщение..."
+                promptText="Write a message..."
                 onAction="#sendMessage"
         />
         <Button
