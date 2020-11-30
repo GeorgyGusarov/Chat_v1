@@ -18,7 +18,7 @@ public class Controller implements Initializable {
     DataOutputStream out;
 
     final String IP_ADDRESS = "localhost";
-    final int PORT = 8189;
+    final int PORT = 2204;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -32,16 +32,28 @@ public class Controller implements Initializable {
                 public void run() {
                     try {
                         while (true) {
-                            String str = in.readUTF(); // сюда приходит сообщение от сервера
-                            if (str.equals("/server is closed")) {
+                            String msg = in.readUTF(); // сюда приходит сообщение от сервера
+                            if (msg.equals("/server is closed")) {
                                 textArea.appendText("Alert: you have been disconnected from the server");
                                 break;
                             }
-                            textArea.appendText(str + "\n");
+                            textArea.appendText(msg + "\n");
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     } finally {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            out.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                         try {
                             socket.close();
                         } catch (IOException e) {

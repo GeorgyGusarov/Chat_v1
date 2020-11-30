@@ -7,38 +7,24 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class ServerMain {
-    public static void main(String[] args) {
+    private Vector<ClientHandler> clients;
+
+    public ServerMain() {
+        clients = new Vector<>();
         ServerSocket server = null;
         Socket socket = null;
 
         try {
-            server = new ServerSocket(8189);
+            server = new ServerSocket(2204);
             System.out.println("Сервер запущен");
 
-            socket = server.accept();
-            System.out.println("Клиент подключился");
-
-            DataInputStream in = new DataInputStream(socket.getInputStream());
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-
-            /*Scanner scanner = new Scanner(socket.getInputStream()); // с помощью сканера читаем данные из сети
-
-             // Realization of echo server
-
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);*/
-
             while (true) {
-                String str = in.readUTF();
-                System.out.println("Client: " + str);
-
-                if (str.equals("/end")) {
-                    out.writeUTF("/server is closed");
-                    break;
-                }
-
-                out.writeUTF(str);
+                socket = server.accept();
+                System.out.println("Клиент подключился");
+                clients.add(new ClientHandler(socket, this));
             }
 
         } catch (IOException e) {
@@ -56,6 +42,11 @@ public class ServerMain {
                 e.printStackTrace();
             }
         }
+    }
 
+    public void showMsgToServer(String msg) {
+        for (ClientHandler o : clients) {
+            o.sendMsgBackToClient(msg);
+        }
     }
 }
