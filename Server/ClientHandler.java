@@ -45,11 +45,13 @@ public class ClientHandler {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+
                         try {
                             socket.close();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        serverMain.unsubscribe(ClientHandler.this);
                     }
                 }
             }).start();

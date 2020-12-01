@@ -1,12 +1,8 @@
 package Server;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.Vector;
 
 public class ServerMain {
@@ -18,13 +14,18 @@ public class ServerMain {
         Socket socket = null;
 
         try {
+            AuthenticationService.connect();
+            String str = AuthenticationService.getNickByLoginAndPass("login1", "pass1");
+            System.out.println(str);
+
             server = new ServerSocket(2204);
-            System.out.println("Сервер запущен");
+            System.out.println("Server is online");
 
             while (true) {
                 socket = server.accept();
-                System.out.println("Клиент подключился");
-                clients.add(new ClientHandler(socket, this));
+                System.out.println("Client connected");
+                subscribe(new ClientHandler(socket, this));
+                // clients.add(new ClientHandler(socket, this));
             }
 
         } catch (IOException e) {
@@ -41,6 +42,7 @@ public class ServerMain {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            AuthenticationService.disconnect();
         }
     }
 
@@ -48,5 +50,13 @@ public class ServerMain {
         for (ClientHandler o : clients) {
             o.sendMsgBackToClient(msg);
         }
+    }
+
+    public void subscribe(ClientHandler client) {
+        clients.add(client);
+    }
+
+    public void unsubscribe(ClientHandler client) {
+        clients.remove(client);
     }
 }
