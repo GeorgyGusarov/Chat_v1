@@ -15,17 +15,13 @@ public class ServerMain {
 
         try {
             AuthenticationService.connect();
-            String str = AuthenticationService.getNickByLoginAndPass("login1", "pass1");
-            System.out.println(str);
-
             server = new ServerSocket(2204);
             System.out.println("Server is online");
 
             while (true) {
                 socket = server.accept();
                 System.out.println("Client connected");
-                subscribe(new ClientHandler(socket, this));
-                // clients.add(new ClientHandler(socket, this));
+                new ClientHandler(socket, this);
             }
 
         } catch (IOException e) {
