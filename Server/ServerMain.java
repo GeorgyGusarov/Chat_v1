@@ -15,7 +15,7 @@ public class ServerMain {
 
         try {
             AuthenticationService.connect();
-            server = new ServerSocket(2204);
+            server = new ServerSocket(8889);
             System.out.println("Server is online");
 
             while (true) {
@@ -42,9 +42,16 @@ public class ServerMain {
         }
     }
 
-    public void showMsgToServer(String msg) {
+    /**
+     *
+     * @param from пришёл пользователь, которому мы собираемся отправить сообщение
+     * @param msg перебераем пользователей и если его енту в списке, то отправляем msg
+     */
+    public void showMsgToServer(ClientHandler from, String msg) {
         for (ClientHandler o : clients) {
-            o.sendMsgBackToClient(msg);
+            if (!o.checkBlackList(from.getNick())) {
+                o.sendMsgBackToClient(msg);
+            }
         }
     }
 
@@ -54,5 +61,27 @@ public class ServerMain {
 
     public void unsubscribe(ClientHandler client) {
         clients.remove(client);
+    }
+
+    public void sendPersonalMsg(ClientHandler from, String to, String msg) {
+        for (ClientHandler o : clients) {
+            if (o.getNick().equals(to)) {
+                if (!o.checkBlackList(from.getNick())) {
+                    o.sendMsgBackToClient("from " + from.getNick() + ": " + msg);
+                    from.sendMsgBackToClient("to " + to + ": " + msg);
+                    return;
+                }
+            }
+        }
+        from.sendMsgBackToClient("Client with nick: " + to + " is not online");
+    }
+
+    public boolean isNickTaken(String nick) {
+        for (ClientHandler o : clients) {
+            if (o.getNick().equals(nick)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

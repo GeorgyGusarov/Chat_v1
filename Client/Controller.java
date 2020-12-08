@@ -31,7 +31,7 @@ public class Controller {
     DataOutputStream out;
 
     final String IP_ADDRESS = "localhost";
-    final int PORT = 2204;
+    final int PORT = 8889;
 
     public void connect() {
         try {
@@ -48,7 +48,7 @@ public class Controller {
                          */
                         while (true) {
                             String msg = in.readUTF(); // сюда приходит сообщение от сервера
-                            if (msg.startsWith("/login successful")) {
+                            if (msg.startsWith("/login successful")) { // лучше использовать метод startsWith
                                 setLoggedIn(true);
                                 break;
                             } else {
@@ -62,7 +62,7 @@ public class Controller {
                         while (true) {
                             String msg = in.readUTF(); // сюда приходит сообщение от сервера
                             if (msg.equals("/server is closed")) {
-                                textArea.appendText("/Alert: you've been disconnected from the server" + "\n");
+                                textArea.appendText("WARNING!: you've been disconnected from the server" + "\n");
                                 break;
                             }
                             textArea.appendText(msg + "\n");
