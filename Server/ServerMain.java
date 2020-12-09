@@ -57,10 +57,12 @@ public class ServerMain {
 
     public void subscribe(ClientHandler client) {
         clients.add(client);
+        showUsersList();
     }
 
     public void unsubscribe(ClientHandler client) {
         clients.remove(client);
+        showUsersList();
     }
 
     public void sendPersonalMsg(ClientHandler from, String to, String msg) {
@@ -83,5 +85,17 @@ public class ServerMain {
             }
         }
         return false;
+    }
+
+    public void showUsersList() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("/usersList"); // кладем служебное сообщение в строку
+        for (ClientHandler o : clients) { // перебираем клиентов
+            sb.append(o.getNick() + " "); // кладем в строку ники
+        }
+        String out = sb.toString(); // преобразовываем в 1 строку
+        for (ClientHandler o : clients) {
+            o.sendMsgBackToClient(out); // отправляем всем клиентам
+        }
     }
 }

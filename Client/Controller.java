@@ -1,11 +1,11 @@
 package Client;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -23,6 +23,8 @@ public class Controller {
     TextField loginField;
     @FXML
     PasswordField passwordField;
+    @FXML
+    ListView<String> usersList; // список юзеров онлайн
 
     private boolean isLoggedIn;
 
@@ -65,7 +67,20 @@ public class Controller {
                                 textArea.appendText("WARNING!: you've been disconnected from the server" + "\n");
                                 break;
                             }
-                            textArea.appendText(msg + "\n");
+                            if (msg.startsWith("/usersList")) {
+                                String[] usersArray = msg.split(" ");
+                                Platform.runLater(new Runnable() { // нужен для синхронизации работы при изменении клиентов. Обновление листа происходит тут
+                                    @Override
+                                    public void run() {
+                                        usersList.getItems().clear();
+                                        for (int i = 1; i < usersArray.length; i++) {
+                                            usersList.getItems().add(usersArray[i]);
+                                        }
+                                    }
+                                });
+                            } else {
+                                textArea.appendText(msg + "\n");
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -126,11 +141,19 @@ public class Controller {
             upperPanel.setManaged(true);
             bottomPanel.setVisible(false);
             bottomPanel.setManaged(false);
+            usersList.setVisible(false);
+            usersList.setManaged(false);
         } else {
             upperPanel.setVisible(false);
             upperPanel.setManaged(false);
             bottomPanel.setVisible(true);
             bottomPanel.setManaged(true);
+            usersList.setVisible(true);
+            usersList.setManaged(true);
         }
+    }
+
+    public void selectUser(MouseEvent mouseEvent) {
+
     }
 }
