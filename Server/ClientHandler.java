@@ -79,7 +79,7 @@ public class ClientHandler {
                                 if (msg.startsWith("/block")) {
                                     String[] blockedUsers = msg.split(" ");
                                     blackList.add(blockedUsers[1]);
-                                    sendMsgBackToClient("User " + blockedUsers[1] + " added to blacklist.");
+                                    sendMsgBackToClient("/User " + blockedUsers[1] + " added to blacklist.");
                                 }
                             } else {
                                 serverMain.showMsgToServer(ClientHandler.this, nick + ": " + msg);
